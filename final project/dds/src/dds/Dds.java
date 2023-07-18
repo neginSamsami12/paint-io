@@ -1,5 +1,5 @@
 
-package dds;
+
 
 import javafx.application.Application;
 
@@ -29,7 +29,7 @@ import javafx.scene.paint.Color;
 
 
 
-public class Dds extends Application {
+public class Paint_io extends Application {
     int count = 0;
     int startx;
     int starty;
@@ -190,15 +190,7 @@ public class Dds extends Application {
             }
         });
           
-          
-          
-        
-          
-          
-          
-          
-         
-          
+
           final int rows =8;
           final int cols =8;
           final double chkr_size =50;
@@ -245,84 +237,66 @@ public class Dds extends Application {
           ///------------------------------------------------------------------------------------------
           AnimationTimer timer = new AnimationTimer() {
             @Override
-            public void handle(long now) {
-                
-            double nextX = x + dx;
-            double nextY = y + dy;
-            int i = (int) (x / CHECKER_SIZE);
-            int j = (int) (y / CHECKER_SIZE);
-                
-          //  System.out.println("ih"+count);
-               
-            rect.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
-            
-          
-            double xi = i * CHECKER_SIZE + (CHECKER_SIZE - rect.getWidth()) / 2;
-            double yj = j * CHECKER_SIZE + (CHECKER_SIZE - rect.getHeight()) / 2;
-            rect.setLayoutX(xi);
-            rect.setLayoutY(yj);
-            x = nextX;
-            y = nextY;
-               
-                
-            Rectangle rect1 =new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
-            rect1.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
-            rect1.setLayoutX(xi);
-            rect1.setLayoutY(yj);
-            pane.getChildren().add(rect1);
-                
-             
-                
-                
-                
-                  
-          
-                  
-         
-          
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                redRectX += redRectDx;
-                redRectY += redRectDy;
-                 if (redRectX < 0 || redRectX > WIDTH - redRect.getWidth()) {
-                     redRectDx += -1;
-                   }
-                 
-                 if (redRectY < 0 || redRectY > HEIGHT - redRect.getHeight()) {
-                        redRectDy *= -1;
-                   }
-                 redRect.setLayoutX(redRectX);
-                 redRect.setLayoutY(redRectY);
-                 
-                 for(Node node :pane.getChildren()){
-                     if(node instanceof Rectangle){
-                         Rectangle rect =(Rectangle)node;
-                         if(redRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
-                             rect.setFill(Color.RED.deriveColor(0, 1, 1,0.9));
-                         }
-                       
-                         
-                         if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
-                               System.exit(1);
-                               }
-                         
-                     }
-                 
-                 }
-                    
+public void handle(long now) {
+    double nextX = x + dx;
+    double nextY = y + dy;
+    int i = (int) (x / CHECKER_SIZE);
+    int j = (int) (y / CHECKER_SIZE);
+
+    rect.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
+
+    double xi = i * CHECKER_SIZE + (CHECKER_SIZE - rect.getWidth()) / 2;
+    double yj = j * CHECKER_SIZE + (CHECKER_SIZE - rect.getHeight()) / 2;
+
+
+
+    rect.setLayoutX(xi);
+    rect.setLayoutY(yj);
+    x = nextX;
+    y = nextY;
+
+    Rectangle rect1 =new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
+    rect1.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
+    rect1.setLayoutX(xi);
+    rect1.setLayoutY(yj);
+    pane.getChildren().add(rect1);
+
+    redRectX += redRectDx;
+    redRectY += redRectDy;
+
+    if (redRectX < 0) {
+        redRectX = 0;
+        redRectDx = -redRectDx;
+    }
+    if (redRectX + redRect.getWidth() > WIDTH) {
+        redRectX = WIDTH - redRect.getWidth();
+        redRectDx = -redRectDx;
+    }
+    if (redRectY < 0) {
+        redRectY = 0;
+        redRectDy = -redRectDy;
+    }
+    if (redRectY + redRect.getHeight() > HEIGHT) {
+        redRectY = HEIGHT - redRect.getHeight();
+        redRectDy = -redRectDy;
+    }
+
+    redRect.setX(redRectX);
+    redRect.setY(redRectY);
+
+    for(Node node :pane.getChildren()){
+        if(node instanceof Rectangle){
+            Rectangle rect =(Rectangle)node;
+            if(redRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
+                rect.setFill(Color.RED.deriveColor(0, 1, 1,0.9));
             }
+
+            if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
+                System.exit(1);
+            }
+        }
+    }
+}
         };
         timer.start();
       
