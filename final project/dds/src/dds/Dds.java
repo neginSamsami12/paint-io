@@ -34,6 +34,8 @@ public class Paint_io extends Application {
     int startx;
     int starty;
     
+    int num_of_players = 2;  مشخص کردن تعداد حریف ها
+    
     final double speeds =5;
     double dx1 =0;
     double dy1=0;
@@ -60,8 +62,14 @@ public class Paint_io extends Application {
     
     double redRectX = Math.random() * WIDTH;
     double redRectY = Math.random() * HEIGHT;
-    double redRectDx = Math.random() * speeds - speeds / 2;
-    double redRectDy = Math.random() * speeds - speeds / 2;
+    double redRectDx = Math.random() * 2 - speeds / 2; //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
+    double redRectDy = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
+    
+    
+    double greenRectX = Math.random() * WIDTH;
+    double greenRectY = Math.random() * HEIGHT;
+    double greenRectDx = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
+    double greenRectDy = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
           
     
      
@@ -77,7 +85,7 @@ public class Paint_io extends Application {
         Menu m = new Menu("file");
   
         // create menuitems
-        MenuItem m1 = new MenuItem("game over");
+        MenuItem m1 = new MenuItem("quit the game");
         MenuItem m2 =new MenuItem("show scor");
         
         m.getItems().add(m1);
@@ -91,8 +99,8 @@ public class Paint_io extends Application {
         
       
 
-        BackgroundFill white =new BackgroundFill(Color.WHITE,null,null);
-        BackgroundFill black =new BackgroundFill(Color.BLACK,null,null);
+        BackgroundFill white = new BackgroundFill(Color.WHITE,null,null);
+        BackgroundFill black = new BackgroundFill(Color.BLACK,null,null);
         pane = new Pane();
         
           
@@ -111,7 +119,7 @@ public class Paint_io extends Application {
                 pane.getChildren().add(rect);
                 
                 
-                if(rect.getFill().equals(Color.BLUE)){
+                if(rect.getFill().equals(Color.BLUE.deriveColor(0, 1, 1, 0.9))){
                     kl++;
                 }
                   
@@ -135,7 +143,7 @@ public class Paint_io extends Application {
        
         
         m1.setOnAction(event ->{
-            pane.getChildren().clear();
+            System.exit(1);
             
             
         });
@@ -212,12 +220,28 @@ public class Paint_io extends Application {
                   pane.getChildren().add(recdt);
               }
           }
+          
+          
           Rectangle redRect = new Rectangle(50, 50);
           redRect.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
+          if (num_of_players >= 1){
           pane.getChildren().add(redRect);
-          
+          }
           double redRectx =Math.random() * (WIDTH - redRect.getWidth());
           double redRecty =Math.random() * (HEIGHT -redRect.getHeight());
+          
+          
+          
+            Rectangle greenRect = new Rectangle(50, 50);
+            greenRect.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
+            if(num_of_players >= 2){
+            pane.getChildren().add(greenRect);
+          }
+            double greenRectx =Math.random() * (WIDTH - greenRect.getWidth());
+            double greenRecty =Math.random() * (HEIGHT -greenRect.getHeight());
+          
+          
+          
           double spe =3;
           
           
@@ -283,13 +307,53 @@ public void handle(long now) {
 
     redRect.setX(redRectX);
     redRect.setY(redRectY);
+    
+    
+    
+            greenRectX += greenRectDx;
+            greenRectY += greenRectDy;
+
+            // Check for collisions with walls
+            if (greenRectX < 0) {
+                greenRectX = 0;
+                greenRectDx = -greenRectDx;
+            }
+
+            if (greenRectY < 0) {
+                greenRectY = 0;
+                greenRectDy = -greenRectDy;
+            }
+            
+            if (greenRectY + greenRect.getHeight() > HEIGHT) {
+                greenRectY = HEIGHT - greenRect.getHeight();
+                greenRectDy = -greenRectDy;
+            }
+            if (greenRectX + greenRect.getWidth() > WIDTH) {
+                greenRectX = WIDTH - greenRect.getWidth();
+                greenRectDx = -greenRectDx;
+            }
+
+            
+    greenRect.setX(greenRectX);
+    greenRect.setY(greenRectY);
+    
 
     for(Node node :pane.getChildren()){
         if(node instanceof Rectangle){
             Rectangle rect =(Rectangle)node;
+            if(num_of_players >= 1){
             if(redRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
                 rect.setFill(Color.RED.deriveColor(0, 1, 1,0.9));
             }
+            }
+            if (num_of_players >= 2){
+            
+        if(greenRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
+                rect.setFill(Color.GREEN.deriveColor(0, 1, 1,0.9));
+            }
+            }
+            
+            
 
             if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
@@ -297,6 +361,8 @@ public void handle(long now) {
         }
     }
 }
+
+
         };
         timer.start();
       
