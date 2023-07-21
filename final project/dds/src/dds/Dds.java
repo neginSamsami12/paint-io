@@ -1,4 +1,5 @@
-
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 
 import javafx.application.Application;
@@ -29,14 +30,14 @@ import javafx.scene.paint.Color;
 
 
 
-public class paint_io extends Application {
+public class test extends Application {
     int count = 0;
     int startx;
     int starty;
     
-    int num_of_players = 2;
+    int num_of_players = 1;
     
-    final double speeds =5;
+    final double speeds =50; //show how fast enemies will move(speed of the game)
     double dx1 =0;
     double dy1=0;
     private static final int WIDTH = 1000;
@@ -62,14 +63,14 @@ public class paint_io extends Application {
     
     double redRectX = Math.random() * WIDTH;
     double redRectY = Math.random() * HEIGHT;
-    double redRectDx = Math.random() * 2 - speeds / 2;
-    double redRectDy = Math.random() * 2 - speeds / 2;
+    double redRectDx = Math.random() * speeds - speeds / 2;
+    double redRectDy = Math.random() * speeds - speeds / 2;
     
     
     double greenRectX = Math.random() * WIDTH;
     double greenRectY = Math.random() * HEIGHT;
-    double greenRectDx = Math.random() * 2 - speeds / 2;
-    double greenRectDy = Math.random() * 2 - speeds / 2;
+    double greenRectDx = Math.random() * speeds - speeds / 2;
+    double greenRectDy = Math.random() * speeds - speeds / 2;
           
     
      
@@ -222,23 +223,28 @@ public class paint_io extends Application {
           }
           
           
-          Rectangle redRect = new Rectangle(50, 50);
-          redRect.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
+
+          Image image = new Image("file:C:\\Users\\SibCo\\Desktop\\87de8500-08d0-4f53-952c-df69c72b78f8.png"); // Replace with your image path
+            ImageView redRect = new ImageView(image);
+            redRect.setFitWidth(50);
+            redRect.setFitHeight(50);
           if (num_of_players >= 1){
           pane.getChildren().add(redRect);
           }
-          double redRectx =Math.random() * (WIDTH - redRect.getWidth());
-          double redRecty =Math.random() * (HEIGHT -redRect.getHeight());
+          double redRectx =Math.random() * (WIDTH - 50);
+          double redRecty =Math.random() * (HEIGHT -50);
           
           
           
-            Rectangle greenRect = new Rectangle(50, 50);
-            greenRect.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
+            Image image_2 = new Image("file:C:\\Users\\SibCo\\Desktop\\sonic-the-hedgehog-movie.jpg"); // Replace with your image path
+            ImageView greenRect = new ImageView(image_2);
+            greenRect.setFitWidth(50);
+            greenRect.setFitHeight(50);
             if(num_of_players >= 2){
             pane.getChildren().add(greenRect);
           }
-            double greenRectx =Math.random() * (WIDTH - greenRect.getWidth());
-            double greenRecty =Math.random() * (HEIGHT -greenRect.getHeight());
+            double greenRectx =Math.random() * (WIDTH - 50);
+            double greenRecty =Math.random() * (HEIGHT - 50);
           
           
           
@@ -292,21 +298,21 @@ public void handle(long now) {
         redRectX = 0;
         redRectDx = -redRectDx;
     }
-    if (redRectX + redRect.getWidth() > WIDTH) {
-        redRectX = WIDTH - redRect.getWidth();
+    if (redRectX + 50 > WIDTH) {
+        redRectX = WIDTH - 50;
         redRectDx = -redRectDx;
     }
     if (redRectY < 0) {
         redRectY = 0;
         redRectDy = -redRectDy;
     }
-    if (redRectY + redRect.getHeight() > HEIGHT) {
-        redRectY = HEIGHT - redRect.getHeight();
+    if (redRectY + 50 > HEIGHT) {
+        redRectY = HEIGHT - 50;
         redRectDy = -redRectDy;
     }
 
-    redRect.setX(redRectX);
-    redRect.setY(redRectY);
+    redRect.setLayoutX(redRectX);
+    redRect.setLayoutY(redRectY);
     
     
     
@@ -324,18 +330,18 @@ public void handle(long now) {
                 greenRectDy = -greenRectDy;
             }
             
-            if (greenRectY + greenRect.getHeight() > HEIGHT) {
-                greenRectY = HEIGHT - greenRect.getHeight();
+            if (greenRectY + 50 > HEIGHT) {
+                greenRectY = HEIGHT - 50;
                 greenRectDy = -greenRectDy;
             }
-            if (greenRectX + greenRect.getWidth() > WIDTH) {
-                greenRectX = WIDTH - greenRect.getWidth();
+            if (greenRectX + 50 > WIDTH) {
+                greenRectX = WIDTH - 50;
                 greenRectDx = -greenRectDx;
             }
 
             
-    greenRect.setX(greenRectX);
-    greenRect.setY(greenRectY);
+    greenRect.setLayoutX(greenRectX);
+    greenRect.setLayoutY(greenRectY);
     
 
     for(Node node :pane.getChildren()){
