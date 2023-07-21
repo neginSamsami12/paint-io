@@ -29,12 +29,12 @@ import javafx.scene.paint.Color;
 
 
 
-public class Paint_io extends Application {
+public class paint_io extends Application {
     int count = 0;
     int startx;
     int starty;
     
-    int num_of_players = 2;  مشخص کردن تعداد حریف ها
+    int num_of_players = 2;
     
     final double speeds =5;
     double dx1 =0;
@@ -62,14 +62,14 @@ public class Paint_io extends Application {
     
     double redRectX = Math.random() * WIDTH;
     double redRectY = Math.random() * HEIGHT;
-    double redRectDx = Math.random() * 2 - speeds / 2; //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
-    double redRectDy = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
+    double redRectDx = Math.random() * 2 - speeds / 2;
+    double redRectDy = Math.random() * 2 - speeds / 2;
     
     
     double greenRectX = Math.random() * WIDTH;
     double greenRectY = Math.random() * HEIGHT;
-    double greenRectDx = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
-    double greenRectDy = Math.random() * 2 - speeds / 2;  //عددی که بعد از ضرب امده است نشان دهنده سرعت بازی است
+    double greenRectDx = Math.random() * 2 - speeds / 2;
+    double greenRectDy = Math.random() * 2 - speeds / 2;
           
     
      
@@ -354,10 +354,20 @@ public void handle(long now) {
             }
             
             
-
+            if(num_of_players >= 1){
             if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
-            }
+            }}
+            
+            if(num_of_players >= 2){
+            if (greenRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
+                System.exit(1);
+            }}
+            
+            if(num_of_players >= 2)            
+            if (redRect.getBoundsInParent().intersects(greenRect.getBoundsInParent())) {
+                System.exit(1);
+            }            
         }
     }
 }
