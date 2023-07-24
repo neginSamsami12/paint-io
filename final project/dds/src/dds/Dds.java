@@ -32,18 +32,15 @@ import javafx.scene.paint.Color;
 
 
 public class test extends Application {
-    int count = 0;
-    int startx;
-    int starty;
+
     
     int num_of_players = 2;
     
     final double speeds = 2; //show how fast enemies will move(speed of the game)
-    double dx1 = 0;
-    double dy1 = 0;
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 600;
-    private static final int CHECKER_SIZE = 50;
+
+    private static final int WIDTH = 1000;  //طول زمین بازی
+    private static final int HEIGHT = 600; //عرض زمین بازی
+    private static final int CHECKER_SIZE = 50; //میتوان زمین را بزرگتر کرد یعنی هرچی این عدد کمتر زمین بزرگتر و تعداد خانه ها ریز تر میشود
     
     private Pane pane;
     private Rectangle rect;
@@ -51,27 +48,24 @@ public class test extends Application {
     
     private double x = WIDTH / 2;
     private double y = HEIGHT / 2;
-    private double dx = 0;
-    private double dy = 0;
-    private double speed = 5; //سرعت کاراکتراصلی 
+    private double dx = 0; //مکان اولیه ابی
+    private double dy = 0;//مکان اولیه ابی
+    private double speed = 2; //سرعت کاراکتراصلی 
     
-    private Color[][] colorMatrix;
-    
-    double randomdx ;
-    double randomdy;
+   
     
     
     
-    double redRectX = Math.random() * WIDTH;  //مکان اولیه کاراکتر قرمز
-    double redRectY = Math.random() * HEIGHT;  //مکان اولیه کاراکتر قرمز
+    double redRectX = Math.random() * WIDTH;//مکان اولیه کاراکتر قرمز
+    double redRectY = Math.random() * HEIGHT;//مکان اولیه کاراکتر قرمز
     double redRectDx = 0;
     double redRectDy = 0;
     
     int directionChangeTimer = 59;
     
     
-    double greenRectX = Math.random() * WIDTH;  //مکان اولیه کاراکتر سبز
-    double greenRectY = Math.random() * HEIGHT;  //مکان اولیه کاراکتر سبز
+    double greenRectX = Math.random() * WIDTH; //مکان اولیه کاراکتر سبز
+    double greenRectY = Math.random() * HEIGHT; //مکان اولیه کاراکتر سبز
     double greenRectDx = 0;
     double greenRectDy = 0;
           
@@ -236,8 +230,6 @@ public class test extends Application {
           if (num_of_players >= 1){
           pane.getChildren().add(redRect);
           }
-          double redRectx =Math.random() * (WIDTH - 50);
-          double redRecty =Math.random() * (HEIGHT -50);
           
           
           
@@ -248,25 +240,7 @@ public class test extends Application {
             if(num_of_players >= 2){
             pane.getChildren().add(greenRect);
           }
-            double greenRectx =Math.random() * (WIDTH - 50);
-            double greenRecty =Math.random() * (HEIGHT - 50);
           
-          
-          
-          double spe =3;
-          
-          
-           for (int d = startx; d < startx + WIDTH; d++) {
-                     for (int f = starty; f < starty + HEIGHT; f++) {
-                           if (rect.contains(d, f)) {
-                                count++;
-                                         }
-                                     }
-                                  }
-                 
-              
-                 
-                
           
 
           ///------------------------------------------------------------------------------------------
@@ -280,10 +254,22 @@ public void handle(long now) {
       directionChangeTimer = 0;
       changeRedRectDirection();
       changegreenRectDirection();
-    }   // در این تابع هر 3 ثانیه یک جهت جدید برای کاراکتر قرمز و سبز تولید میشود
+    }   
+    
+    
 
     double nextX = x + dx;
     double nextY = y + dy;
+    
+    int nextredX = (int) (redRectX + redRectDx);
+    int nextredY = (int) (redRectY + redRectDy);
+    
+    int redi = (int) (redRectX / CHECKER_SIZE);
+    int redj = (int) (redRectY / CHECKER_SIZE);
+    
+    double redxi = redi* CHECKER_SIZE + (CHECKER_SIZE - 50) / 2;
+    double redxj = redj* CHECKER_SIZE + (CHECKER_SIZE - 50) / 2;
+            
     int i = (int) (x / CHECKER_SIZE);
     int j = (int) (y / CHECKER_SIZE);
 
@@ -305,12 +291,11 @@ public void handle(long now) {
     rect1.setLayoutY(yj);
     pane.getChildren().add(rect1);
     
-        double nextredX = redRectX + redRectDx;
-    double nextredY = redRectY + redRectDy;
-    
-    redRectX += redRectDx;
-    redRectY += redRectDy;
 
+    
+
+            redRectX += redRectDx;
+            redRectY += redRectDy;
     if (redRectX < 0) {
         redRectX = 0;
         redRectDx = -redRectDx;
@@ -328,8 +313,8 @@ public void handle(long now) {
         redRectDy = -redRectDy;
     }
 
-    redRect.setX(nextredX);
-    redRect.setY(nextredY);
+    redRect.setLayoutX(redRectX); //مربوط به حرکت عکس میباشد
+    redRect.setLayoutY(redRectY); //مربوط به حرکت عکس میباشد
     
     
     
@@ -356,25 +341,35 @@ public void handle(long now) {
                 greenRectDx = -greenRectDx;
             }
 
-            
-    greenRect.setLayoutX(greenRectX);
-    greenRect.setLayoutY(greenRectY);
+
+
+    greenRect.setLayoutX(greenRectX); //مربوط به حرکت عکس میباشد
+    greenRect.setLayoutY(greenRectY); //مربوط به حرکت عکس میباشد
     
+    
+    Rectangle redrectToColor = new Rectangle(CHECKER_SIZE, CHECKER_SIZE); 
+int redcolorX = (int) (redRectX / CHECKER_SIZE) * CHECKER_SIZE;
+int redcolorY = (int) (redRectY / CHECKER_SIZE) * CHECKER_SIZE;
+redrectToColor.setLayoutX(redcolorX);
+redrectToColor.setLayoutY(redcolorY);
+redrectToColor.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
+if (num_of_players >= 1){
+pane.getChildren().add(redrectToColor);}
+
+
+
+Rectangle greenrectToColor = new Rectangle(CHECKER_SIZE, CHECKER_SIZE); 
+int colorgreenX = (int) (greenRectX / CHECKER_SIZE) * CHECKER_SIZE;
+int colorgreenY = (int) (greenRectY / CHECKER_SIZE) * CHECKER_SIZE;
+greenrectToColor.setLayoutX(colorgreenX);
+greenrectToColor.setLayoutY(colorgreenY);
+greenrectToColor.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
+if(num_of_players > 1){
+pane.getChildren().add(greenrectToColor);}
 
     for(Node node :pane.getChildren()){
         if(node instanceof Rectangle){
             Rectangle rect =(Rectangle)node;
-            if(num_of_players >= 1){
-            if(redRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
-                rect.setFill(Color.RED.deriveColor(0, 1, 1,0.9));
-            }
-            }
-            if (num_of_players >= 2){
-            
-        if(greenRect.getBoundsInParent().intersects(rect.getBoundsInParent())){
-                rect.setFill(Color.GREEN.deriveColor(0, 1, 1,0.9));
-            }
-            }
             
             
             if(num_of_players >= 1){
@@ -395,11 +390,12 @@ public void handle(long now) {
     }
 }
 
-    private void changeRedRectDirection() {  //حرکت بعدی کاراکتر قرمز در این تابع مشخص میشود
+    private void changeRedRectDirection() { //حرکت بعدی کاراکتر قرمز در این تابع مشخص میشود
                 
         Random redrandom = new Random();    
         int redMoveDir = 0; // 0 = up, 1 = down, 2 = left, 3 = right
         redMoveDir = redrandom.nextInt(4); 
+        
         switch(redMoveDir) {
          case 0: // Up
             redRectDy = -speeds;   
@@ -419,11 +415,12 @@ public void handle(long now) {
       } 
             }
             
-    private void changegreenRectDirection() {  // حرکت بعدی کاراکتر سبز در این تابع مشخص میشود
+    private void changegreenRectDirection() { //حرکت بعدی کاراکتر سلز در این تابع مشخص میشود
                 
         Random greenrandom = new Random();    
         int greenMoveDir = 0; // 0 = up, 1 = down, 2 = left, 3 = right
         greenMoveDir = greenrandom.nextInt(4); 
+        
         switch(greenMoveDir) {
          case 0: // Up
             greenRectDy = -speeds;   
