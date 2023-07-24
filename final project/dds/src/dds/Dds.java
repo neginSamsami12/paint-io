@@ -1,3 +1,4 @@
+import java.util.Random;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
@@ -35,11 +36,11 @@ public class test extends Application {
     int startx;
     int starty;
     
-    int num_of_players = 1;
+    int num_of_players = 2;
     
-    final double speeds =50; //show how fast enemies will move(speed of the game)
-    double dx1 =0;
-    double dy1=0;
+    final double speeds = 2; //show how fast enemies will move(speed of the game)
+    double dx1 = 0;
+    double dy1 = 0;
     private static final int WIDTH = 1000;
     private static final int HEIGHT = 600;
     private static final int CHECKER_SIZE = 50;
@@ -52,7 +53,7 @@ public class test extends Application {
     private double y = HEIGHT / 2;
     private double dx = 0;
     private double dy = 0;
-    private double speed = 5;
+    private double speed = 5; //سرعت کاراکتراصلی 
     
     private Color[][] colorMatrix;
     
@@ -61,16 +62,18 @@ public class test extends Application {
     
     
     
-    double redRectX = Math.random() * WIDTH;
-    double redRectY = Math.random() * HEIGHT;
-    double redRectDx = Math.random() * speeds - speeds / 2;
-    double redRectDy = Math.random() * speeds - speeds / 2;
+    double redRectX = Math.random() * WIDTH;  //مکان اولیه کاراکتر قرمز
+    double redRectY = Math.random() * HEIGHT;  //مکان اولیه کاراکتر قرمز
+    double redRectDx = 0;
+    double redRectDy = 0;
+    
+    int directionChangeTimer = 59;
     
     
-    double greenRectX = Math.random() * WIDTH;
-    double greenRectY = Math.random() * HEIGHT;
-    double greenRectDx = Math.random() * speeds - speeds / 2;
-    double greenRectDy = Math.random() * speeds - speeds / 2;
+    double greenRectX = Math.random() * WIDTH;  //مکان اولیه کاراکتر سبز
+    double greenRectY = Math.random() * HEIGHT;  //مکان اولیه کاراکتر سبز
+    double greenRectDx = 0;
+    double greenRectDy = 0;
           
     
      
@@ -87,7 +90,7 @@ public class test extends Application {
   
         // create menuitems
         MenuItem m1 = new MenuItem("quit the game");
-        MenuItem m2 =new MenuItem("show scor");
+        MenuItem m2 =new MenuItem("show score");
         
         m.getItems().add(m1);
         m.getItems().add(m2);
@@ -184,6 +187,8 @@ public class test extends Application {
                     break;
             }
         });
+        
+
          
          
           primaryStage.getScene().setOnKeyReleased(event -> {
@@ -200,11 +205,11 @@ public class test extends Application {
         });
           
 
-          final int rows =8;
-          final int cols =8;
+          final int rows = 8;
+          final int cols = 8;
           final double chkr_size =50;
           
-          for(int i=0;i <rows;i++){
+          for(int i=0;i < rows;i++){
               for(int j=0;j <cols;j++){
                   Rectangle recdt =new Rectangle(chkr_size,chkr_size);
                   double xi =i *chkr_size;
@@ -268,6 +273,15 @@ public class test extends Application {
           AnimationTimer timer = new AnimationTimer() {
             @Override
 public void handle(long now) {
+    
+        
+        directionChangeTimer++;
+    if (directionChangeTimer == 60) {  // Every 3 seconds (60 ticks at 60 FPS)
+      directionChangeTimer = 0;
+      changeRedRectDirection();
+      changegreenRectDirection();
+    }   // در این تابع هر 3 ثانیه یک جهت جدید برای کاراکتر قرمز و سبز تولید میشود
+
     double nextX = x + dx;
     double nextY = y + dy;
     int i = (int) (x / CHECKER_SIZE);
@@ -290,7 +304,10 @@ public void handle(long now) {
     rect1.setLayoutX(xi);
     rect1.setLayoutY(yj);
     pane.getChildren().add(rect1);
-
+    
+        double nextredX = redRectX + redRectDx;
+    double nextredY = redRectY + redRectDy;
+    
     redRectX += redRectDx;
     redRectY += redRectDy;
 
@@ -311,8 +328,8 @@ public void handle(long now) {
         redRectDy = -redRectDy;
     }
 
-    redRect.setLayoutX(redRectX);
-    redRect.setLayoutY(redRectY);
+    redRect.setX(nextredX);
+    redRect.setY(nextredY);
     
     
     
@@ -377,6 +394,54 @@ public void handle(long now) {
         }
     }
 }
+
+    private void changeRedRectDirection() {  //حرکت بعدی کاراکتر قرمز در این تابع مشخص میشود
+                
+        Random redrandom = new Random();    
+        int redMoveDir = 0; // 0 = up, 1 = down, 2 = left, 3 = right
+        redMoveDir = redrandom.nextInt(4); 
+        switch(redMoveDir) {
+         case 0: // Up
+            redRectDy = -speeds;   
+            redRectDx = 0;
+            break;
+         case 1: // Right      
+            redRectDx = speeds;
+            redRectDy = 0;
+            break;                
+         case 2: // Down        
+            redRectDy = speeds;   
+            redRectDx = 0;       
+            break;
+         case 3: // Left       
+            redRectDx = -speeds;
+            redRectDy = 0;   
+      } 
+            }
+            
+    private void changegreenRectDirection() {  // حرکت بعدی کاراکتر سبز در این تابع مشخص میشود
+                
+        Random greenrandom = new Random();    
+        int greenMoveDir = 0; // 0 = up, 1 = down, 2 = left, 3 = right
+        greenMoveDir = greenrandom.nextInt(4); 
+        switch(greenMoveDir) {
+         case 0: // Up
+            greenRectDy = -speeds;   
+            greenRectDx = 0;
+            break;
+         case 1: // Right      
+            greenRectDx = speeds;
+            greenRectDy = 0;
+            break;                
+         case 2: // Down        
+            greenRectDy = speeds;   
+            greenRectDx = 0;       
+            break;
+         case 3: // Left       
+            greenRectDx = -speeds;
+            greenRectDy = 0;   
+      } 
+            }
 
 
         };
