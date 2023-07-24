@@ -25,6 +25,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.D;
+import static javafx.scene.input.KeyCode.S;
+import static javafx.scene.input.KeyCode.W;
 import javafx.scene.layout.VBox;
 
 import javafx.scene.paint.Color;
@@ -35,7 +40,7 @@ public class test extends Application {
 
     
     int num_of_players = 2;
-    
+    Rectangle rect1;
     final double speeds = 2; //show how fast enemies will move(speed of the game)
 
     private static final int WIDTH = 1000;  //طول زمین بازی
@@ -50,7 +55,7 @@ public class test extends Application {
     private double y = HEIGHT / 2;
     private double dx = 0; //مکان اولیه ابی
     private double dy = 0;//مکان اولیه ابی
-    private double speed = 2; //سرعت کاراکتراصلی 
+    private double speed = 5; //سرعت کاراکتراصلی 
     
    
     
@@ -62,6 +67,11 @@ public class test extends Application {
     double redRectDy = 0;
     
     int directionChangeTimer = 59;
+    
+    boolean redlost = true;
+    boolean greenlost = true;
+    boolean bluelost = true;
+
     
     
     double greenRectX = Math.random() * WIDTH; //مکان اولیه کاراکتر سبز
@@ -165,38 +175,7 @@ public class test extends Application {
         
        
         
-        primaryStage.getScene().setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case W:
-                    dy = -speed;
-                    break;
-                case A:
-                    dx = -speed;
-                    break;
-                case S:
-                    dy = speed;
-                    break;
-                case D:
-                    dx = speed;
-                    break;
-            }
-        });
-        
 
-         
-         
-          primaryStage.getScene().setOnKeyReleased(event -> {
-            switch (event.getCode()) {
-                case W:
-                case S:
-                    dy = 0;
-                    break;
-                case A:
-                case D:
-                    dx = 0;
-                    break;
-            }
-        });
           
 
           final int rows = 8;
@@ -261,14 +240,7 @@ public void handle(long now) {
     double nextX = x + dx;
     double nextY = y + dy;
     
-    int nextredX = (int) (redRectX + redRectDx);
-    int nextredY = (int) (redRectY + redRectDy);
-    
-    int redi = (int) (redRectX / CHECKER_SIZE);
-    int redj = (int) (redRectY / CHECKER_SIZE);
-    
-    double redxi = redi* CHECKER_SIZE + (CHECKER_SIZE - 50) / 2;
-    double redxj = redj* CHECKER_SIZE + (CHECKER_SIZE - 50) / 2;
+
             
     int i = (int) (x / CHECKER_SIZE);
     int j = (int) (y / CHECKER_SIZE);
@@ -279,21 +251,55 @@ public void handle(long now) {
     double yj = j * CHECKER_SIZE + (CHECKER_SIZE - rect.getHeight()) / 2;
 
 
-
+if(bluelost){
     rect.setLayoutX(xi);
-    rect.setLayoutY(yj);
+    rect.setLayoutY(yj);}
     x = nextX;
     y = nextY;
 
-    Rectangle rect1 =new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
+
+    if(bluelost){
+    rect1 =new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
+    
     rect1.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
     rect1.setLayoutX(xi);
     rect1.setLayoutY(yj);
     pane.getChildren().add(rect1);
+}
     
 
     
+        primaryStage.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.W) {
+                
+                    dy = -speed;
+            }
+                if (event.getCode() == KeyCode.A){
+                    dx = -speed;}
+                if (event.getCode() == KeyCode.S){
+                    dy = speed;
+        }
+                if (event.getCode() == KeyCode.D){
+                    dx = speed;
+                }
+            
+        });
+        
 
+         
+         
+          primaryStage.getScene().setOnKeyReleased(event -> {
+            switch (event.getCode()) {
+                case W:
+                case S:
+                    dy = 0;
+                    break;
+                case A:
+                case D:
+                    dx = 0;
+                    break;
+            }
+        });
             redRectX += redRectDx;
             redRectY += redRectDy;
     if (redRectX < 0) {
@@ -353,8 +359,9 @@ int redcolorY = (int) (redRectY / CHECKER_SIZE) * CHECKER_SIZE;
 redrectToColor.setLayoutX(redcolorX);
 redrectToColor.setLayoutY(redcolorY);
 redrectToColor.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
-if (num_of_players >= 1){
-pane.getChildren().add(redrectToColor);}
+if (num_of_players >= 1 && redlost){
+pane.getChildren().add(redrectToColor);
+}
 
 
 
@@ -364,25 +371,76 @@ int colorgreenY = (int) (greenRectY / CHECKER_SIZE) * CHECKER_SIZE;
 greenrectToColor.setLayoutX(colorgreenX);
 greenrectToColor.setLayoutY(colorgreenY);
 greenrectToColor.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
-if(num_of_players > 1){
-pane.getChildren().add(greenrectToColor);}
+if(num_of_players > 1 && greenlost){
+pane.getChildren().add(greenrectToColor);
+}
+
+if (redcolorX == colorgreenX ||redcolorY == colorgreenY && directionChangeTimer%60 == 0 ){ // وقتی قرمز سبز روبرو هستند
+
+pane.getScene().setOnKeyPressed(event -> {
+    if (event.getCode() == KeyCode.R) {
+        redlost = false;
+        pane.getChildren().remove(redRect);
+        
+    }
+    if (event.getCode() == KeyCode.G) {
+        greenlost = false;
+        pane.getChildren().remove(greenRect);
+    }
+});
+
+}
+ 
+
+if (xi == colorgreenX || yj == colorgreenY  && directionChangeTimer%60 == 0){ // وقتی قرمز ابی روبرو هستند
+
+pane.getScene().setOnKeyPressed(event -> {
+    if (event.getCode() == KeyCode.SPACE) {
+        bluelost = false;
+        pane.getChildren().remove(rect1);
+        
+    }
+    if (event.getCode() == KeyCode.G) {
+        greenlost = false;
+        pane.getChildren().remove(greenRect);
+    }
+});
+
+}
+
+
+if (redcolorX == xi ||redcolorY == yj  && directionChangeTimer%60 == 0){ // وقتی قرمز ابی روبرو هستند
+
+pane.getScene().setOnKeyPressed(event -> {
+    if (event.getCode() == KeyCode.R) {
+        redlost = false;
+        pane.getChildren().remove(redRect);
+        
+    }
+    if (event.getCode() == KeyCode.SPACE) {
+        bluelost = false;
+        pane.getChildren().remove(rect1);
+    }
+});
+
+}
 
     for(Node node :pane.getChildren()){
         if(node instanceof Rectangle){
             Rectangle rect =(Rectangle)node;
             
             
-            if(num_of_players >= 1){
+            if(num_of_players >= 1 && redlost && bluelost){
             if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
-            if(num_of_players >= 2){
+            if(num_of_players >= 2 && greenlost && bluelost){
             if (greenRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
-            if(num_of_players >= 2)            
+            if(num_of_players >= 2 && redlost && greenlost)            
             if (redRect.getBoundsInParent().intersects(greenRect.getBoundsInParent())) {
                 System.exit(1);
             }            
