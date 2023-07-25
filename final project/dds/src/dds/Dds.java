@@ -66,11 +66,15 @@ public class test extends Application {
     double redRectDx = 0;
     double redRectDy = 0;
     
-    int directionChangeTimer = 59;
+    int directionChangeTimer = 119;
     
     boolean redlost = true;
     boolean greenlost = true;
     boolean bluelost = true;
+    
+    int redshot = 0;
+    int greenshot = 0;
+    int blueshot = 0;
 
     
     
@@ -229,7 +233,10 @@ public void handle(long now) {
     
         
         directionChangeTimer++;
-    if (directionChangeTimer == 60) {  // Every 3 seconds (60 ticks at 60 FPS)
+        blueshot += 1;
+        greenshot += 1;
+        redshot += 1;
+    if (directionChangeTimer % 120 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
       directionChangeTimer = 0;
       changeRedRectDirection();
       changegreenRectDirection();
@@ -375,15 +382,17 @@ if(num_of_players > 1 && greenlost){
 pane.getChildren().add(greenrectToColor);
 }
 
-if (redcolorX == colorgreenX ||redcolorY == colorgreenY && directionChangeTimer%60 == 0 ){ // وقتی قرمز سبز روبرو هستند
+if (redcolorX == colorgreenX ||redcolorY == colorgreenY ){
 
 pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.R) {
+    if (event.getCode() == KeyCode.R && greenshot >= 120) {
+        greenshot = 0;
         redlost = false;
         pane.getChildren().remove(redRect);
         
     }
-    if (event.getCode() == KeyCode.G) {
+    if (event.getCode() == KeyCode.G && redshot >= 120) {
+        redshot = 0;
         greenlost = false;
         pane.getChildren().remove(greenRect);
     }
@@ -392,15 +401,17 @@ pane.getScene().setOnKeyPressed(event -> {
 }
  
 
-if (xi == colorgreenX || yj == colorgreenY  && directionChangeTimer%60 == 0){ // وقتی قرمز ابی روبرو هستند
+if (xi == colorgreenX || yj == colorgreenY ){
 
 pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.SPACE) {
+    if (event.getCode() == KeyCode.SPACE  && greenshot >= 120) {
+        greenshot = 0;
         bluelost = false;
         pane.getChildren().remove(rect1);
         
     }
-    if (event.getCode() == KeyCode.G) {
+    if (event.getCode() == KeyCode.G && blueshot >= 120) {
+        blueshot = 0;
         greenlost = false;
         pane.getChildren().remove(greenRect);
     }
@@ -409,15 +420,17 @@ pane.getScene().setOnKeyPressed(event -> {
 }
 
 
-if (redcolorX == xi ||redcolorY == yj  && directionChangeTimer%60 == 0){ // وقتی قرمز ابی روبرو هستند
+if (redcolorX == xi ||redcolorY == yj   ){
 
 pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.R) {
+    if (event.getCode() == KeyCode.R && blueshot >= 120) {
+        blueshot = 0;
         redlost = false;
         pane.getChildren().remove(redRect);
         
     }
-    if (event.getCode() == KeyCode.SPACE) {
+    if (event.getCode() == KeyCode.SPACE && redshot >= 120) {
+        redshot = 0;
         bluelost = false;
         pane.getChildren().remove(rect1);
     }
