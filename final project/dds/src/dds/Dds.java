@@ -39,7 +39,7 @@ import javafx.scene.paint.Color;
 public class test extends Application {
 
     
-    int num_of_players = 2;
+    int num_of_players = 1;
     Rectangle rect1;
     final double speeds = 2; //show how fast enemies will move(speed of the game)
 
@@ -204,26 +204,27 @@ public class test extends Application {
               }
           }
           
+          Move_Images redplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\87de8500-08d0-4f53-952c-df69c72b78f8.png");
           
-
-          Image image = new Image("file:C:\\Users\\SibCo\\Desktop\\87de8500-08d0-4f53-952c-df69c72b78f8.png"); // Replace with your image path
-            ImageView redRect = new ImageView(image);
-            redRect.setFitWidth(50);
-            redRect.setFitHeight(50);
+          redplayer.create_image();
+          
           if (num_of_players >= 1){
-          pane.getChildren().add(redRect);
+          redplayer.getchil();
+          
           }
           
           
+          Move_Images greenplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\sonic-the-hedgehog-movie.jpg");
+          greenplayer.create_image();
+
+          if (num_of_players >= 2){
+          greenplayer.getchil();
           
-            Image image_2 = new Image("file:C:\\Users\\SibCo\\Desktop\\sonic-the-hedgehog-movie.jpg"); // Replace with your image path
-            ImageView greenRect = new ImageView(image_2);
-            greenRect.setFitWidth(50);
-            greenRect.setFitHeight(50);
-            if(num_of_players >= 2){
-            pane.getChildren().add(greenRect);
           }
           
+          
+          painting red_paint = new painting(pane);
+          painting green_paint = new painting(pane);
           
 
           ///------------------------------------------------------------------------------------------
@@ -238,8 +239,10 @@ public void handle(long now) {
         redshot += 1;
     if (directionChangeTimer % 120 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
       directionChangeTimer = 0;
-      changeRedRectDirection();
-      changegreenRectDirection();
+      if(redlost){
+      changeRedRectDirection();}
+      if(greenlost){
+      changegreenRectDirection();}
     }   
     
     
@@ -306,9 +309,12 @@ if(bluelost){
                     dx = 0;
                     break;
             }
-        });
-            redRectX += redRectDx;
-            redRectY += redRectDy;
+        }
+          );
+          
+    redRectX += redRectDx;
+    redRectY += redRectDy;
+    
     if (redRectX < 0) {
         redRectX = 0;
         redRectDx = -redRectDx;
@@ -325,11 +331,9 @@ if(bluelost){
         redRectY = HEIGHT - 50;
         redRectDy = -redRectDy;
     }
+    redplayer.set_layout(redRectX, redRectY);//مربوط به حرکت عکس میباشد
 
-    redRect.setLayoutX(redRectX); //مربوط به حرکت عکس میباشد
-    redRect.setLayoutY(redRectY); //مربوط به حرکت عکس میباشد
-    
-    
+
     
             greenRectX += greenRectDx;
             greenRectY += greenRectDy;
@@ -353,83 +357,72 @@ if(bluelost){
                 greenRectX = WIDTH - 50;
                 greenRectDx = -greenRectDx;
             }
-
-
-
-    greenRect.setLayoutX(greenRectX); //مربوط به حرکت عکس میباشد
-    greenRect.setLayoutY(greenRectY); //مربوط به حرکت عکس میباشد
+            
+            greenplayer.set_layout(greenRectX, greenRectY);//مربوط به حرکت عکس میباشد
     
     
-    Rectangle redrectToColor = new Rectangle(CHECKER_SIZE, CHECKER_SIZE); 
-int redcolorX = (int) (redRectX / CHECKER_SIZE) * CHECKER_SIZE;
-int redcolorY = (int) (redRectY / CHECKER_SIZE) * CHECKER_SIZE;
-redrectToColor.setLayoutX(redcolorX);
-redrectToColor.setLayoutY(redcolorY);
-redrectToColor.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
-if (num_of_players >= 1 && redlost){
-pane.getChildren().add(redrectToColor);
-}
 
 
+            red_paint.paint_node(redRectX, redRectY, CHECKER_SIZE, num_of_players, redlost, "red");
+            if(num_of_players >= 1 && redlost){
+            red_paint.getchill();
+            }
 
-Rectangle greenrectToColor = new Rectangle(CHECKER_SIZE, CHECKER_SIZE); 
-int colorgreenX = (int) (greenRectX / CHECKER_SIZE) * CHECKER_SIZE;
-int colorgreenY = (int) (greenRectY / CHECKER_SIZE) * CHECKER_SIZE;
-greenrectToColor.setLayoutX(colorgreenX);
-greenrectToColor.setLayoutY(colorgreenY);
-greenrectToColor.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
-if(num_of_players > 1 && greenlost){
-pane.getChildren().add(greenrectToColor);
-}
+            green_paint.paint_node(greenRectX, greenRectY, CHECKER_SIZE, num_of_players, greenlost, "green");
+            if(num_of_players >= 2 && greenlost){
+            green_paint.getchill();
+            }
 
-if (redcolorX == colorgreenX ||redcolorY == colorgreenY ){
 
-pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.R && greenshot >= 120) {
-        greenshot = 0;
-        redlost = false;
-        pane.getChildren().remove(redRect);
+            if (red_paint.redcolorX == green_paint.redcolorX ||red_paint.redcolorY == green_paint.redcolorY ){
+
+            pane.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.R && greenshot >= 60) {
+            greenshot = 0;
+            redlost = false;
         
-    }
-    if (event.getCode() == KeyCode.G && redshot >= 120) {
-        redshot = 0;
-        greenlost = false;
-        pane.getChildren().remove(greenRect);
+            redplayer.get_killed(redlost);
+        
+            }
+            if (event.getCode() == KeyCode.G && redshot >= 60) {
+            redshot = 0;
+            greenlost = false;
+            greenplayer.get_killed(greenlost);
     }
 });
 
 }
  
 
-if (xi == colorgreenX || yj == colorgreenY ){
+            if (xi == green_paint.redcolorX || yj == green_paint.redcolorY ){
 
-pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.SPACE  && greenshot >= 120) {
-        greenshot = 0;
-        bluelost = false;
-        pane.getChildren().remove(rect1);
+            pane.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.SPACE  && greenshot >= 60) {
+            greenshot = 0;
+            bluelost = false;
+            pane.getChildren().remove(rect1);
         
-    }
-    if (event.getCode() == KeyCode.G && blueshot >= 120) {
-        blueshot = 0;
-        greenlost = false;
-        pane.getChildren().remove(greenRect);
-    }
-});
+        }
+        if (event.getCode() == KeyCode.G && blueshot >= 60) {
+            blueshot = 0;
+            greenlost = false;
+            greenplayer.get_killed(greenlost);
+        }
+    });
 
-}
+        }
 
 
-if (redcolorX == xi ||redcolorY == yj   ){
+if (red_paint.redcolorX == xi ||red_paint.redcolorY == yj   ){
 
 pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.R && blueshot >= 120) {
+    if (event.getCode() == KeyCode.R && blueshot >= 60) {
         blueshot = 0;
         redlost = false;
-        pane.getChildren().remove(redRect);
+        redplayer.get_killed(redlost);
         
     }
-    if (event.getCode() == KeyCode.SPACE && redshot >= 120) {
+    if (event.getCode() == KeyCode.SPACE && redshot >= 60) {
         redshot = 0;
         bluelost = false;
         pane.getChildren().remove(rect1);
@@ -444,17 +437,17 @@ pane.getScene().setOnKeyPressed(event -> {
             
             
             if(num_of_players >= 1 && redlost && bluelost){
-            if (redRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
+            if (redplayer.get_ret().getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
             if(num_of_players >= 2 && greenlost && bluelost){
-            if (greenRect.getBoundsInParent().intersects(rect1.getBoundsInParent())) {
+            if (greenplayer.get_ret().getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
             if(num_of_players >= 2 && redlost && greenlost)            
-            if (redRect.getBoundsInParent().intersects(greenRect.getBoundsInParent())) {
+            if (redplayer.get_ret().getBoundsInParent().intersects(greenplayer.get_ret().getBoundsInParent())) {
                 System.exit(1);
             }            
         }
