@@ -1,6 +1,4 @@
 import java.util.Random;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 
 import javafx.application.Application;
@@ -12,16 +10,12 @@ import javafx.stage.Stage;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.Pane;
 import javafx.animation.AnimationTimer;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Background;
 
 import javafx.scene.control.ScrollPane;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -39,7 +33,7 @@ import javafx.scene.paint.Color;
 public class test extends Application {
 
     
-    int num_of_players = 1;
+    int num_of_players = 2;
     Rectangle rect1;
     final double speeds = 2; //show how fast enemies will move(speed of the game)
 
@@ -76,6 +70,15 @@ public class test extends Application {
     int greenshot = 0;
     int blueshot = 0;
 
+    int redlevel = 2;//یک یعنی سخت دو یعنی متوسط و سه یعنی اسون و این اعداد نشان دهنده دقت شلیک بازیکنان هستند برای مثال در عددیک  یا اسان بازیکن باسه بار خطا شلیک میکند یعنی در دو شلیک اول دقت لازم را ندارد و در شلیک سوم به هدف میزند
+    int greenlevel = 1;
+    int bluelevel = 1;
+    
+    int redlevel_temp = redlevel;
+    int bluelevel_temp = bluelevel;
+    int greenlevel_temp = greenlevel;
+
+    
     
     
     double greenRectX = Math.random() * WIDTH; //مکان اولیه کاراکتر سبز
@@ -378,16 +381,29 @@ if(bluelost){
 
             pane.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.R && greenshot >= 60) {
-            greenshot = 0;
-            redlost = false;
-        
-            redplayer.get_killed(redlost);
+                
+                greenlevel_temp -= 1;
+                
+                if(greenlevel == 0){
+                    
+                    greenshot = 0;
+                    redlost = false;
+                    redplayer.get_killed(redlost);
+                    greenlevel_temp = greenlevel;
+                    
+                }
         
             }
             if (event.getCode() == KeyCode.G && redshot >= 60) {
-            redshot = 0;
-            greenlost = false;
-            greenplayer.get_killed(greenlost);
+                redlevel_temp -= 1;
+                if(redlevel_temp == 0){
+                    
+                    redshot = 0;
+                    greenlost = false;
+                    greenplayer.get_killed(greenlost);
+                    redlevel_temp = redlevel;
+                    
+                }
     }
 });
 
@@ -398,35 +414,51 @@ if(bluelost){
 
             pane.getScene().setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.SPACE  && greenshot >= 60) {
-            greenshot = 0;
-            bluelost = false;
-            pane.getChildren().remove(rect1);
+                greenlevel_temp -= 1;
+                if(greenlevel_temp == 0){
+                    greenshot = 0;
+                    bluelost = false;
+                    pane.getChildren().remove(rect1);
+                    greenlevel_temp = greenlevel;
+                }
         
         }
         if (event.getCode() == KeyCode.G && blueshot >= 60) {
+            bluelevel_temp -= 1;
+            if(bluelevel_temp == 0){
             blueshot = 0;
             greenlost = false;
             greenplayer.get_killed(greenlost);
+            bluelevel_temp = bluelevel;
+            }
         }
     });
 
         }
 
 
-if (red_paint.redcolorX == xi ||red_paint.redcolorY == yj   ){
+        if (red_paint.redcolorX == xi ||red_paint.redcolorY == yj   ){
 
-pane.getScene().setOnKeyPressed(event -> {
-    if (event.getCode() == KeyCode.R && blueshot >= 60) {
-        blueshot = 0;
-        redlost = false;
-        redplayer.get_killed(redlost);
+            pane.getScene().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.R && blueshot >= 60 ) {
+                bluelevel_temp -= 1;
+                if(bluelevel_temp == 0){
+                blueshot = 0;
+                redlost = false;
+                redplayer.get_killed(redlost);
+                bluelevel_temp = bluelevel;
+                }
         
-    }
-    if (event.getCode() == KeyCode.SPACE && redshot >= 60) {
-        redshot = 0;
-        bluelost = false;
-        pane.getChildren().remove(rect1);
-    }
+            }
+            if (event.getCode() == KeyCode.SPACE && redshot >= 60) {
+                redlevel_temp -= 1;
+                if(redlevel_temp == 0){
+                redshot = 0;
+                bluelost = false;
+                pane.getChildren().remove(rect1);
+                redlevel_temp = redlevel;
+                }
+            }
 });
 
 }
