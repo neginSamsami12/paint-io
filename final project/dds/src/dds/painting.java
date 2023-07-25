@@ -26,7 +26,7 @@ public class painting {
         redrectToColor.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
         }
         if(color == "green"){
-        redrectToColor.setFill(Color.RED.deriveColor(0, 1, 1, 0.9));
+        redrectToColor.setFill(Color.GREEN.deriveColor(0, 1, 1, 0.9));
         }
 
             }
