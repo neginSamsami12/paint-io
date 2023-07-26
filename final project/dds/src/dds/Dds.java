@@ -92,7 +92,14 @@ public class test extends Application {
     
     public int kl;
     @Override
+
     public void start(Stage primaryStage) {
+            
+    hi st = new hi();
+    st.start(primaryStage);
+    
+    }
+    public void startGame(Stage primaryStage) {
        
        
         
