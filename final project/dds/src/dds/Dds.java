@@ -16,6 +16,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.control.ScrollPane;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -24,6 +25,8 @@ import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.D;
 import static javafx.scene.input.KeyCode.S;
 import static javafx.scene.input.KeyCode.W;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import javafx.scene.paint.Color;
@@ -34,6 +37,8 @@ public class test extends Application {
 
     
     int num_of_players = 2;
+    int redCount = 0;
+    int greenCount = 0;
     Rectangle rect1;
     final double speeds = 2; //show how fast enemies will move(speed of the game)
 
@@ -43,7 +48,7 @@ public class test extends Application {
     
     private Pane pane;
     private Rectangle rect;
-    
+    int bullets_of_gun = 5; //یعنی اسلحه B چهار عدد گلوله دارد
     
     private double x = WIDTH / 2;
     private double y = HEIGHT / 2;
@@ -60,11 +65,13 @@ public class test extends Application {
     double redRectDx = 0;
     double redRectDy = 0;
     
-    int directionChangeTimer = 119;
+    int directionChangeTimer = 29;
     
     boolean redlost = true;
     boolean greenlost = true;
     boolean bluelost = true;
+    
+    int bluedirct;
     
     int redshot = 0;
     int greenshot = 0;
@@ -91,20 +98,25 @@ public class test extends Application {
     
     
     public int kl;
+    
+    
     @Override
-
     public void start(Stage primaryStage) {
-            
     hi st = new hi();
     st.start(primaryStage);
+
     
     }
+    
+
+        
+        
     public void startGame(Stage primaryStage) {
        
        
         
            // create a menu
-        Menu m = new Menu("file");
+        Menu m = new Menu("menu");
   
         // create menuitems
         MenuItem m1 = new MenuItem("quit the game");
@@ -121,7 +133,7 @@ public class test extends Application {
         
       
 
-        BackgroundFill white = new BackgroundFill(Color.WHITE,null,null);
+        BackgroundFill white = new BackgroundFill(Color.YELLOW,null,null);
         BackgroundFill black = new BackgroundFill(Color.BLACK,null,null);
         pane = new Pane();
         
@@ -131,7 +143,7 @@ public class test extends Application {
         
         for(int i =0;i <10000 /CHECKER_SIZE;i++){
             for(int j =0;j<10000/CHECKER_SIZE;j++){
-                Rectangle rect =new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
+                Rectangle rect = new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
                 
                 rect.setX(i * CHECKER_SIZE);
                 rect.setY(j * CHECKER_SIZE);
@@ -140,20 +152,14 @@ public class test extends Application {
                
                 pane.getChildren().add(rect);
                 
-                
-                if(rect.getFill().equals(Color.BLUE.deriveColor(0, 1, 1, 0.9))){
-                    kl++;
-                }
+
                   
             }
         }
         
               
              
-              m2.setOnAction(event -> {
-    
-             System.out.println("blue colored: "+ kl);
-                });
+
        
         
         
@@ -168,7 +174,8 @@ public class test extends Application {
             System.exit(1);
             
             
-        });
+        }
+        );
         
         Scene scenee =new Scene(pane,WIDTH,HEIGHT);
         scenee.setRoot(new StackPane(scrollPane,menubox));
@@ -194,16 +201,16 @@ public class test extends Application {
 
           final int rows = 8;
           final int cols = 8;
-          final double chkr_size =50;
+          final double chkr_size = 50;
           
-          for(int i=0;i < rows;i++){
-              for(int j=0;j <cols;j++){
-                  Rectangle recdt =new Rectangle(chkr_size,chkr_size);
-                  double xi =i *chkr_size;
-                  double yj =j * chkr_size;
+          for(int i=0; i < rows; i++){
+              for(int j=0; j < cols; j++){
+                  Rectangle recdt = new Rectangle(chkr_size,chkr_size);
+                  double xi = i * chkr_size;
+                  double yj = j * chkr_size;
                   recdt.setLayoutX(xi);
                   recdt.setLayoutY(yj);
-                  recdt.setFill(((i+j)%2==0)?Color.WHITE:Color.BLACK);
+                  recdt.setFill(((i+j)%2==0)?Color.YELLOW:Color.BLACK);
                   
                   
                   
@@ -223,7 +230,8 @@ public class test extends Application {
           
           }
           
-          
+                    
+
           Move_Images greenplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\sonic-the-hedgehog-movie.jpg");
           greenplayer.create_image();
 
@@ -236,6 +244,9 @@ public class test extends Application {
           painting red_paint = new painting(pane);
           painting green_paint = new painting(pane);
           
+          Weapon gun = new Weapon();
+          
+          
 
           ///------------------------------------------------------------------------------------------
           AnimationTimer timer = new AnimationTimer() {
@@ -247,12 +258,12 @@ public void handle(long now) {
         blueshot += 1;
         greenshot += 1;
         redshot += 1;
-    if (directionChangeTimer % 120 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
+    if (directionChangeTimer % 30 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
       directionChangeTimer = 0;
-      if(redlost){
-      changeRedRectDirection();}
-      if(greenlost){
-      changegreenRectDirection();}
+      
+      changeRedRectDirection();
+      
+      changegreenRectDirection();
     }   
     
     
@@ -264,6 +275,8 @@ public void handle(long now) {
             
     int i = (int) (x / CHECKER_SIZE);
     int j = (int) (y / CHECKER_SIZE);
+    
+    
 
     rect.setFill(Color.BLUE.deriveColor(0, 1, 1, 0.9));
 
@@ -287,20 +300,60 @@ if(bluelost){
     pane.getChildren().add(rect1);
 }
     
+    
+//    for (int m = 0; m <= WIDTH; m += 50){
+//        for(int n = 0; n <= HEIGHT; n += 50){
+//        
+//        boolean redsee = false;
+//        boolean greensee = false;
+//    
+//    if(red_paint.redcolorX == m && red_paint.redcolorY == n){
+//    
+//    redsee = true;
+//    
+//    }
+//    
+//    if(redsee){
+//        redCount += 1;
+//    }
+//    if(green_paint.redcolorX == m && green_paint.redcolorY == n){
+//    
+//    greensee = true;
+//    
+//    }
+//    
+//    if(greensee){
+//        greenCount += 1;
+//    }
+//        }
+//        
+//        
+//    
+//    
+//    }
 
     
+    
+    
+    
         primaryStage.getScene().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.W) {
+            if (event.getCode() == KeyCode.UP) {
                 
                     dy = -speed;
+                    bluedirct = 1;
             }
-                if (event.getCode() == KeyCode.A){
-                    dx = -speed;}
-                if (event.getCode() == KeyCode.S){
+                if (event.getCode() == KeyCode.LEFT){
+                    dx = -speed;
+                    bluedirct = 2;
+                
+                }
+                if (event.getCode() == KeyCode.DOWN){
                     dy = speed;
+                    bluedirct = 3;
         }
-                if (event.getCode() == KeyCode.D){
+                if (event.getCode() == KeyCode.RIGHT){
                     dx = speed;
+                    bluedirct = 4;
                 }
             
         });
@@ -310,12 +363,12 @@ if(bluelost){
          
           primaryStage.getScene().setOnKeyReleased(event -> {
             switch (event.getCode()) {
-                case W:
-                case S:
+                case UP:
+                case DOWN:
                     dy = 0;
                     break;
-                case A:
-                case D:
+                case RIGHT:
+                case LEFT:
                     dx = 0;
                     break;
             }
@@ -374,12 +427,12 @@ if(bluelost){
 
 
             red_paint.paint_node(redRectX, redRectY, CHECKER_SIZE, num_of_players, redlost, "red");
-            if(num_of_players >= 1 && redlost){
+            if(num_of_players >= 1 && redlost && !gun.redkill){
             red_paint.getchill();
             }
 
             green_paint.paint_node(greenRectX, greenRectY, CHECKER_SIZE, num_of_players, greenlost, "green");
-            if(num_of_players >= 2 && greenlost){
+            if(num_of_players >= 2 && greenlost && !gun.greenkill){
             green_paint.getchill();
             }
 
@@ -387,7 +440,7 @@ if(bluelost){
             if (red_paint.redcolorX == green_paint.redcolorX ||red_paint.redcolorY == green_paint.redcolorY ){
 
             pane.getScene().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.R && greenshot >= 60) {
+            if (event.getCode() == KeyCode.R && greenshot >= 1) {
                 
                 greenlevel_temp -= 1;
                 
@@ -401,7 +454,7 @@ if(bluelost){
                 }
         
             }
-            if (event.getCode() == KeyCode.G && redshot >= 60) {
+            if (event.getCode() == KeyCode.G && redshot >= 1) {
                 redlevel_temp -= 1;
                 if(redlevel_temp == 0){
                     
@@ -409,6 +462,10 @@ if(bluelost){
                     greenlost = false;
                     greenplayer.get_killed(greenlost);
                     redlevel_temp = redlevel;
+                    
+
+
+
                     
                 }
     }
@@ -420,7 +477,7 @@ if(bluelost){
             if (xi == green_paint.redcolorX || yj == green_paint.redcolorY ){
 
             pane.getScene().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.SPACE  && greenshot >= 60) {
+            if (event.getCode() == KeyCode.SPACE  && greenshot >= 1) {
                 greenlevel_temp -= 1;
                 if(greenlevel_temp == 0){
                     greenshot = 0;
@@ -430,7 +487,7 @@ if(bluelost){
                 }
         
         }
-        if (event.getCode() == KeyCode.G && blueshot >= 60) {
+        if (event.getCode() == KeyCode.G && blueshot >= 1) {
             bluelevel_temp -= 1;
             if(bluelevel_temp == 0){
             blueshot = 0;
@@ -447,7 +504,7 @@ if(bluelost){
         if (red_paint.redcolorX == xi ||red_paint.redcolorY == yj   ){
 
             pane.getScene().setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.R && blueshot >= 60 ) {
+            if (event.getCode() == KeyCode.R && blueshot >= 1 ) {
                 bluelevel_temp -= 1;
                 if(bluelevel_temp == 0){
                 blueshot = 0;
@@ -457,7 +514,7 @@ if(bluelost){
                 }
         
             }
-            if (event.getCode() == KeyCode.SPACE && redshot >= 60) {
+            if (event.getCode() == KeyCode.SPACE && redshot >= 1) {
                 redlevel_temp -= 1;
                 if(redlevel_temp == 0){
                 redshot = 0;
@@ -467,9 +524,28 @@ if(bluelost){
                 }
             }
 });
-
 }
-
+scenee.setOnMousePressed(e -> {
+   if (e.getButton() == MouseButton.SECONDARY) {
+       bullets_of_gun -= 1;
+       if(bullets_of_gun > 0){
+       gun.shoot(CHECKER_SIZE, xi, yj, pane, bluedirct, red_paint.redcolorX, red_paint.redcolorY,green_paint.redcolorX, green_paint.redcolorY );
+       
+       if(gun.redkill){
+       
+       redplayer.get_killed(false);
+       
+       }
+       
+       if(gun.greenkill){
+              
+       greenplayer.get_killed(false);
+       
+       }
+       }
+   }
+});
+        
     for(Node node :pane.getChildren()){
         if(node instanceof Rectangle){
             Rectangle rect =(Rectangle)node;
@@ -546,7 +622,16 @@ if(bluelost){
 
         };
         timer.start();
-      
+//                    m2.setOnAction(event -> {
+//    timer.stop();
+//    if(greenCount > redCount){
+//             System.out.println("red colored: " + redCount + "green colored :"+greenCount + "winner is green" );}
+//    else{
+//    System.out.println("red colored: " + redCount + "green colored :" +greenCount + "winner is red" );
+//    
+//    
+//    }
+//                });
     
     }
     
@@ -555,6 +640,7 @@ if(bluelost){
 
    
     public static void main(String[] args) {
+
         launch(args);
     }
     
