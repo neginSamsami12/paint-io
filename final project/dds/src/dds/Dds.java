@@ -16,17 +16,11 @@ import javafx.scene.layout.Background;
 import javafx.scene.control.ScrollPane;
 
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.D;
-import static javafx.scene.input.KeyCode.S;
-import static javafx.scene.input.KeyCode.W;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
 import javafx.scene.paint.Color;
@@ -40,32 +34,30 @@ public class test extends Application {
     int redCount = 0;
     int greenCount = 0;
     Rectangle rect1;
-    final double speeds = 2; //show how fast enemies will move(speed of the game)
+    final double speeds = 5; //show how fast enemies will move(speed of the game)
 
     private static final int WIDTH = 1000;  //طول زمین بازی
     private static final int HEIGHT = 600; //عرض زمین بازی
-    private static final int CHECKER_SIZE = 50; //میتوان زمین را بزرگتر کرد یعنی هرچی این عدد کمتر زمین بزرگتر و تعداد خانه ها ریز تر میشود
+    private static final int CHECKER_SIZE = 30; //میتوان زمین را بزرگتر کرد یعنی هرچی این عدد کمتر زمین بزرگتر و تعداد خانه ها ریز تر میشود
     
     private Pane pane;
     private Rectangle rect;
-    int bullets_of_gun = 5; //یعنی اسلحه B چهار عدد گلوله دارد
+    int bullets_of_gun = 5;
     
     private double x = WIDTH / 2;
     private double y = HEIGHT / 2;
+    double x_temp = x;
+    double y_temp = y;
     private double dx = 0; //مکان اولیه ابی
     private double dy = 0;//مکان اولیه ابی
-    private double speed = 5; //سرعت کاراکتراصلی 
-    
-   
-    
-    
+    private double speed = 12; //سرعت کاراکتراصلی 
     
     double redRectX = Math.random() * WIDTH;//مکان اولیه کاراکتر قرمز
     double redRectY = Math.random() * HEIGHT;//مکان اولیه کاراکتر قرمز
     double redRectDx = 0;
     double redRectDy = 0;
     
-    int directionChangeTimer = 29;
+    int directionChangeTimer = 59;
     
     boolean redlost = true;
     boolean greenlost = true;
@@ -87,7 +79,6 @@ public class test extends Application {
 
     
     
-    
     double greenRectX = Math.random() * WIDTH; //مکان اولیه کاراکتر سبز
     double greenRectY = Math.random() * HEIGHT; //مکان اولیه کاراکتر سبز
     double greenRectDx = 0;
@@ -102,6 +93,7 @@ public class test extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        
     hi st = new hi();
     st.start(primaryStage);
 
@@ -109,7 +101,6 @@ public class test extends Application {
     }
     
 
-        
         
     public void startGame(Stage primaryStage) {
        
@@ -133,34 +124,28 @@ public class test extends Application {
         
       
 
-        BackgroundFill white = new BackgroundFill(Color.YELLOW,null,null);
+        BackgroundFill white = new BackgroundFill(Color.WHITE,null,null);
         BackgroundFill black = new BackgroundFill(Color.BLACK,null,null);
         pane = new Pane();
         
-          
+        
         pane.setPrefSize(2000, 2000);
         pane.setBackground(new Background(new BackgroundFill[]{black,white}[0]));
         
-        for(int i =0;i <10000 /CHECKER_SIZE;i++){
-            for(int j =0;j<10000/CHECKER_SIZE;j++){
-                Rectangle rect = new Rectangle(CHECKER_SIZE,CHECKER_SIZE,((i+j)%2==0) ? black.getFill() :white.getFill());
-                
-                rect.setX(i * CHECKER_SIZE);
-                rect.setY(j * CHECKER_SIZE);
-                
-                
-               
+        final int rows = 300;
+        final int cols = 300;
+   
+        for (int i = 0; i <rows ; i++) {
+            for (int j = 0; j < cols; j++) {
+                Rectangle rect = new Rectangle(CHECKER_SIZE, CHECKER_SIZE);
+                rect.setLayoutX(i * CHECKER_SIZE);  
+                rect.setLayoutY(j * CHECKER_SIZE);    
+                rect.setFill(((i + j) % 2 == 0) ? Color.WHITE : Color.BLACK);
+            
                 pane.getChildren().add(rect);
-                
-
-                  
-            }
+            }  
         }
-        
-              
-             
 
-       
         
         
         ScrollPane scrollPane = new ScrollPane(pane);
@@ -187,39 +172,12 @@ public class test extends Application {
         
         
         
-        rect = new Rectangle(0, 0, 50, 50);
-        rect.setFill(Color.BROWN.deriveColor(3, 1, 1, 0.9));
+        rect = new Rectangle(0, 0, 30, 30);
+        rect.setFill(Color.BLUE);
         pane.getChildren().add(rect);
         
         
-        
-        
-       
-        
 
-          
-
-          final int rows = 8;
-          final int cols = 8;
-          final double chkr_size = 50;
-          
-          for(int i=0; i < rows; i++){
-              for(int j=0; j < cols; j++){
-                  Rectangle recdt = new Rectangle(chkr_size,chkr_size);
-                  double xi = i * chkr_size;
-                  double yj = j * chkr_size;
-                  recdt.setLayoutX(xi);
-                  recdt.setLayoutY(yj);
-                  recdt.setFill(((i+j)%2==0)?Color.YELLOW:Color.BLACK);
-                  
-                  
-                  
-                  
-                  
-                  
-                  pane.getChildren().add(recdt);
-              }
-          }
           
           Move_Images redplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\87de8500-08d0-4f53-952c-df69c72b78f8.png");
           
@@ -232,7 +190,7 @@ public class test extends Application {
           
                     
 
-          Move_Images greenplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\sonic-the-hedgehog-movie.jpg");
+          Move_Images greenplayer = new Move_Images(pane,num_of_players,"file:C:\\Users\\SibCo\\Desktop\\grinch.jpg");
           greenplayer.create_image();
 
           if (num_of_players >= 2){
@@ -258,8 +216,8 @@ public void handle(long now) {
         blueshot += 1;
         greenshot += 1;
         redshot += 1;
-    if (directionChangeTimer % 30 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
-      directionChangeTimer = 0;
+    if (directionChangeTimer % 60 == 0) {  // Every 3 seconds (120 ticks at 120 FPS)
+//      directionChangeTimer = 0;
       
       changeRedRectDirection();
       
@@ -301,36 +259,36 @@ if(bluelost){
 }
     
     
-//    for (int m = 0; m <= WIDTH; m += 50){
-//        for(int n = 0; n <= HEIGHT; n += 50){
-//        
-//        boolean redsee = false;
-//        boolean greensee = false;
-//    
-//    if(red_paint.redcolorX == m && red_paint.redcolorY == n){
-//    
-//    redsee = true;
-//    
-//    }
-//    
-//    if(redsee){
-//        redCount += 1;
-//    }
-//    if(green_paint.redcolorX == m && green_paint.redcolorY == n){
-//    
-//    greensee = true;
-//    
-//    }
-//    
-//    if(greensee){
-//        greenCount += 1;
-//    }
-//        }
-//        
-//        
-//    
-//    
-//    }
+    for (int m = 0; m <= WIDTH; m += 50){
+        for(int n = 0; n <= HEIGHT; n += 50){
+        
+        boolean redsee = false;
+        boolean greensee = false;
+    
+    if(red_paint.redcolorX == m * CHECKER_SIZE && red_paint.redcolorY == n * CHECKER_SIZE){
+    
+    redsee = true;
+    
+    }
+    
+    if(redsee){
+        redCount += 1;
+    }
+    if(green_paint.redcolorX == m * CHECKER_SIZE && green_paint.redcolorY == n * CHECKER_SIZE){
+    
+    greensee = true;
+    
+    }
+    
+    if(greensee){
+        greenCount += 1;
+    }
+        }
+        
+        
+    
+    
+    }
 
     
     
@@ -551,17 +509,17 @@ scenee.setOnMousePressed(e -> {
             Rectangle rect =(Rectangle)node;
             
             
-            if(num_of_players >= 1 && redlost && bluelost){
+            if(num_of_players >= 1 && redlost && bluelost && !gun.redkill){
             if (redplayer.get_ret().getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
-            if(num_of_players >= 2 && greenlost && bluelost){
+            if(num_of_players >= 2 && greenlost && bluelost && !gun.greenkill){
             if (greenplayer.get_ret().getBoundsInParent().intersects(rect1.getBoundsInParent())) {
                 System.exit(1);
             }}
             
-            if(num_of_players >= 2 && redlost && greenlost)            
+            if(num_of_players >= 2 && redlost && greenlost && !gun.redkill && !gun.redkill)            
             if (redplayer.get_ret().getBoundsInParent().intersects(greenplayer.get_ret().getBoundsInParent())) {
                 System.exit(1);
             }            
@@ -622,20 +580,21 @@ scenee.setOnMousePressed(e -> {
 
         };
         timer.start();
-//                    m2.setOnAction(event -> {
-//    timer.stop();
-//    if(greenCount > redCount){
-//             System.out.println("red colored: " + redCount + "green colored :"+greenCount + "winner is green" );}
-//    else{
-//    System.out.println("red colored: " + redCount + "green colored :" +greenCount + "winner is red" );
-//    
-//    
-//    }
-//                });
+        
+        
+        
+                    m2.setOnAction(event -> {
+    timer.stop();
+    if(greenCount > redCount){
+             System.out.println("red colored: " + redCount + "green colored :"+greenCount + "winner is green" );}
+    else{
+    System.out.println("red colored: " + redCount + "green colored :" + greenCount + "winner is red" );
+    
     
     }
+                });
     
-    
+    }
     
 
    
